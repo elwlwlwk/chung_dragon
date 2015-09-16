@@ -1,6 +1,8 @@
+import logging
 import configparser
 import json
 import uuid
+import asyncio
 from rpcsensor import RpcSensor
 
 response=""
@@ -14,3 +16,6 @@ sensors= json.loads(config['SERVER']['sensors'])
 
 for sensor in sensors:
 	sensorList.append(RpcSensor(sensor, config[sensor]))
+
+for sensor in sensorList:
+	sensor.loop.run_forever()

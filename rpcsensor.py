@@ -1,8 +1,12 @@
+import os
 import pika
 import uuid
+import asyncio
+import logging
 
 class RpcSensor(object):
 	def __init__(self, sensor_name, config):
+		print('Initializing %s sensor' % sensor_name)
 		self.connection = pika.BlockingConnection(pika.ConnectionParameters(
 				host='localhost'))
 
@@ -15,6 +19,16 @@ class RpcSensor(object):
 			queue=self.callback_queue)
 		self.name= sensor_name
 		self.config= config
+		os.system(self.config["script"])
+		self.loop = asyncio.get_event_loop()
+		self.set()
+	
+	def set(self):
+		self.handler = self.loop.call_later(int(self.config['refresh_interval']), self.run)
+
+	def run(self):
+		self.set()
+		print("%s : %s %s" % (self.name, self.call().decode(),self.config["unit"]))
 
 	def on_response(self, ch, method, props, body):
 		if self.corr_id == props.correlation_id:
