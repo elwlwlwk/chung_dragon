@@ -13,7 +13,7 @@ int main() {
 		if(respone[0]=0x16){
 			dustPCS=respone[3]*256*256*256+respone[4]*256*256+respone[5]*256+respone[6];
 			dustValue=((float)(dustPCS*3528))/100000;
-			printf("NOW! DUST:%f\n",dustValue);
+			printf("%f\n",dustValue);
 		} else if (respone[0]=0x06) {
 			printf("Hey! I Fail to Receive..\n");
 		}

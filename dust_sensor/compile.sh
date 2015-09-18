@@ -1,1 +1,0 @@
-gcc dust.c -lwiringPi
