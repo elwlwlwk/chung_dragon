@@ -1,0 +1,3 @@
+from passwd import MONGODB_PASSWD
+DB_HOST= '165.194.104.198'
+MONGO_AUTHENTICATE={'id':'pi', 'passwd':MONGODB_PASSWD}
