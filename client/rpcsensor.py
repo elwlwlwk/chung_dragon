@@ -10,6 +10,7 @@ class RpcSensor(object):
 		self.connection = pika.BlockingConnection(pika.ConnectionParameters(
 				host='localhost'))
 
+		self.connection.add_timeout(1, self.on_timeout)
 		self.channel = self.connection.channel()
 
 		result = self.channel.queue_declare(exclusive=True)
@@ -23,6 +24,8 @@ class RpcSensor(object):
 		self.loop = asyncio.get_event_loop()
 		self.set()
 	
+	def on_timeout(self):
+		pass
 	def set(self):
 		self.handler = self.loop.call_later(int(self.config['refresh_interval']), self.run)
 

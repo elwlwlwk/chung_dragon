@@ -11,7 +11,7 @@ correlation_id=""
 sensorList=[]
 
 config= configparser.ConfigParser()
-config.read("server.conf")
+config.read("config.conf")
 sensors= json.loads(config['SERVER']['sensors'])
 
 for sensor in sensors:
