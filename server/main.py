@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, url_for
 from db_pool import MongoDB
 from flask_restful import Resource, Api
-from bson.json_util import dumps
+from bson.json_util import dumps, loads
 
 import json
 import datetime
@@ -45,11 +45,26 @@ class RaspberryPi(Resource):
 	
 api.add_resource(RaspberryPi, "/raspberrypi/<string:rpi_id>")
 
-class data(Resource):
-    def get(self):
-        input_json=json.loads(request.data.decode('utf-8'))
+class Data(Resource):
+    def get(self,input_json):
+        input_json=json.loads(input_json)
         rpi_id=input_json['rpi_id']
-        datas.find({"rpi_id": rpi_id})
+        output=[]
+        index=0
+        for rpi in rpis.find({"rpi_id": rpi_id}):
+            _rpi=loads(dumps(rpi))
+            for sensor in _rpi["sensor_list"]:
+                tmp_sensor={}
+                tmp_sensor["type"]=sensor["type"]
+                recent_data=datas.find({"sensor_id":sensor["sensor_id"],"rpi_id":rpi_id}).sort("time",-1).limit(1)
+                _data=loads(dumps(recent_data))
+                tmp_sensor["value"]=_data[0]["value"]
+                tmp_sensor["time"]=_data[0]["time"]
+                output.append(tmp_sensor)
+        print(output)
+        return output
+            
+                
     def post(self):
         datas.insert(json.loads(request.data.decode('utf-8')))
     def put(self):
@@ -59,7 +74,7 @@ class data(Resource):
         time=input_json['time']
         datas.remove({"time":time})
 
-api.add_resource(data, "/data")
+api.add_resource(Data, "/data/<string:input_json>")
 
 class Sensors(Resource):
     def get(self,sensor_id):

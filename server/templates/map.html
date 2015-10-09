@@ -116,16 +116,37 @@ function setMarkers(map, locations){
 
 
 function addInfoWindow(map,marker, compa) {
-
+var ret;
+$.ajax({
+           type:"GET",
+           url:'/data/{"rpi_id":"'+marker.title+'"}',
+           success : function(data) {
+                 // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
+ret=data;
+str="";
+            for (var i in ret) {
+			str+=ret[i].type
+			str+=ret[i].value
+		}
             var infoWindow = new google.maps.InfoWindow({
                 //content: "temperature: "+compa[4]+"</br>dust: "+compa[5]
-		content: "test"
+		content: str
             });
 
             google.maps.event.addListener(marker, 'click', function () {
                 infoWindow.open(map, marker);
             });
-        }
+           },
+           complete : function(data) {
+                 // 통신이 실패했어도 완료가 되었을 때 이 함수를 타게 된다.
+                 // TODO
+           },
+           error : function(xhr, status, error) {
+                test=xhr;
+                 alert(xhr);
+           }
+     });
+       }
 
 });//jQuery-end
 
