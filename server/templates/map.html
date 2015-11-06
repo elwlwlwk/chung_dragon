@@ -13,7 +13,7 @@ jQuery.ajax({
            url:"/raspberrypis",
            success : function(data) {
                  // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-		rpis=eval("("+data+")");
+		rpis=data;
            },
            complete : function(data) {
                  // 통신이 실패했어도 완료가 되었을 때 이 함수를 타게 된다.
@@ -127,6 +127,7 @@ str="";
             for (var i in ret) {
 			str+=ret[i].type
 			str+=ret[i].value
+			str+="</br>"
 		}
             var infoWindow = new google.maps.InfoWindow({
                 //content: "temperature: "+compa[4]+"</br>dust: "+compa[5]
